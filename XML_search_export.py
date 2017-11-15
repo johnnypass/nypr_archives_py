@@ -38,7 +38,7 @@ def log_in_to_archives(username, password):
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     print "Logging in to archives database."
-    resp = opener.open(ARCHIVES_URL).read()
+    resp = opener.open(ARCHIVES_URL + '/login').read()
     token = re.search('type="hidden" value="([^"]+)"', resp).groups()[0]
     login_data = urllib.urlencode({
         'login': username, 'password': password,
