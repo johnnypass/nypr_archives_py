@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
 """
-This downloads archives records as XML documents based on filtered search results.
+This downloads archives records for use by import_archives.py.
 
+To run this automatically you'll need to set the archives site (cavafy)
+password in the settings file. For increased security, put it in local_settings
+on the relevant machines, like we do with our db password, so if the repo is
+leaked or shared, we don't include it.
 """
 
 import cookielib
@@ -12,13 +16,22 @@ import sys
 import urllib
 import urllib2
 
-ARCHIVES_USERNAME = ''
+ARCHIVES_USERNAME = 'cms-import'
 ARCHIVES_URL = 'https://cavafy.wnyc.org'
+ARCHIVES_SITE_PASSWORD = ''
+
 SEARCH_URLS = [
-    'ENTER SEARCH RESULTS URL HERE',
+    ARCHIVES_URL+'/assets?q=CMS&search_fields%5B%5D=relation',
+    ARCHIVES_URL+'/assets?q=CMSWQXR&search_fields%5B%5D=relation',
 ]
 
+
 def main(argv):
+    # The teardown process for the script will try to use the connection to the
+    # db. Since the download takes a while, the db connection killer will have
+    # killed it by then and this script will output an error. To prevent this,
+    # close the connection immediately. When it's used later, it'll be reopened
+    # if needed.
     xml_dir = argv[-1]
     if not os.path.isdir(xml_dir):
         print(argv)
